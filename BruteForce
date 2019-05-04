@@ -30,7 +30,7 @@ try:
             if(loc == "index.php"):
                 un=username[i]
                 pas=password[k]
-                print("Brute Force was a success and the credintials are\nUsername: "+un+"Password: "+pas)
+                print("Brute Force was a success and the credintials are\nUsername: "+un+"\nPassword: "+pas)
 except ConnectionRefusedError:
     print("Unable to connect")
 connection.close()
